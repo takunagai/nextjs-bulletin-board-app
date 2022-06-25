@@ -1,11 +1,11 @@
-import { Head, Html, Main, NextScript } from "next/document";
+import { Head, Html, Main, NextScript } from "next/document"
 
 const MyDocument = () => {
-  const image =
-    "https://nextjs-bulletin-board-app.vercel.app/favicons/twitter.webp";
-  const url = "https://nextjs-bulletin-board-app.vercel.app/";
-  const content = "Brainstorm App";
-  const description = "Next.js with Dynamic import to disable SSR";
+  const image = "https://nextjs-bulletin-board-app.vercel.app/favicons/twitter.webp"
+  const url = "https://nextjs-bulletin-board-app.vercel.app/"
+  const content = "Brainstorm App"
+  const description = "Next.js with Dynamic import to disable SSR"
+
   return (
     <Html lang="ja">
       <Head>
@@ -18,17 +18,17 @@ const MyDocument = () => {
           rel="icon"
           type="image/png"
           sizes="32x32"
-          href="/favicons/favicon-32x32.png"
+          href="/favicons/icon-32x32.png"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="16x16"
-          href="/favicons/favicon-16x16.png"
+          href="/favicons/icon-16x16.png"
         />
         <link
           rel="manifest"
-          href="/favicons/site.webmanifest"
+          href="/favicons/manifest.json"
           crossOrigin="use-credentials"
         />
         <link
@@ -54,13 +54,13 @@ const MyDocument = () => {
         <link rel="canonical" href={url} />
         <link rel="shortcut icon" href={"/favicon.png"} />
       </Head>
-      <body className="antialiased text-black bg-white">
+      <body className="antialiased">
         <Main />
         <div id="root"></div>
         <NextScript />
       </body>
     </Html>
-  );
-};
+  )
+}
 
-export default MyDocument;
+export default MyDocument

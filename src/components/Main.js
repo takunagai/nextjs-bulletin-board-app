@@ -1,108 +1,106 @@
-import React, { useState, useEffect } from "react";
-import Draggable from "react-draggable";
-import { v4 as uuidv4 } from "uuid";
-var randomColor = require("randomcolor");
-import MouseParticles from "react-mouse-particles";
+import React, { useState, useEffect } from "react"
+import Draggable from "react-draggable"
+import { v4 as uuidv4 } from "uuid"
+import randomColor from 'randomcolor'
+import MouseParticles from "react-mouse-particles"
 
 const Main = () => {
-  const initialState = JSON.parse(localStorage.getItem("items")) || [];
-  const [item, setItem] = useState("");
-  const [items, setItems] = useState(initialState);
+    const initialState = JSON.parse(localStorage.getItem("items")) || []
+    const [items, setItems] = useState(initialState)
+    const [item, setItem] = useState("")
 
-  const keyPress = (event) => {
-    let code = event.keyCode || event.which;
-    if (code === 13) {
-      newitem();
+    useEffect(() => {
+        localStorage.setItem("items", JSON.stringify(items))
+    }, [items])
+
+    const addItem = () => {
+        if (item.trim() !== "") {
+            // input が空白でない場合、新しいアイテムオブジェクトを作成
+            const newItem = {
+                id: uuidv4(),
+                item: item,
+                color: randomColor({ luminosity: "light" }),
+                defaultPos: { x: 100, y: 0 },
+            }
+            // 新しいアイテムオブジェクトをアイテム配列に追加
+            setItems((items) => [...items, newItem])
+            // 項目の値をリセット
+            setItem("")
+        } else {
+            alert("Enter a item")
+            setItem("")
+        }
     }
-  };
 
-  const newitem = () => {
-    if (item.trim() !== "") {
-      //if input is not blank, create a new item object
-      const newitem = {
-        id: uuidv4(),
-        item: item,
-        color: randomColor({ luminosity: "light" }),
-        defaultPos: { x: 100, y: 0 },
-      };
-      //add this new item object to the items array
-      setItems((items) => [...items, newitem]);
-      //reset item value to empty string
-      setItem("");
-    } else {
-      alert("Enter a item");
-      setItem("");
+    const deleteItem = (id) => {
+        setItems(items.filter(item => item.id !== id))
     }
-  };
 
-  useEffect(() => {
-    localStorage.setItem("items", JSON.stringify(items));
-  }, [items]);
+    const handleKeyPress = (e) => {
+        let code = e.keyCode || e.which
+        if (code === 13) { addItem() } // Press Return or Enter key
+    }
 
-  const updatePos = (data, index) => {
-    let newArr = [...items];
-    newArr[index].defaultPos = { x: data.x, y: data.y };
-    setItems(newArr);
-  };
+    const updatePosition = (data, index) => {
+        let newArr = [...items]
+        newArr[index].defaultPos = {
+            x: data.x,
+            y: data.y
+        }
+        setItems(newArr)
+    }
 
-  const deleteNote = (id) => {
-    setItems(items.filter((item) => item.id !== id));
-  };
-  return (
-    <div className="text-gray-500 p-3">
-      <MouseParticles
-        g={1}
-        number={200}
-        color={["#ff0000", "peachpuff"]}
-        radius={10}
-        cull="MuiSvgIcon-root,MuiButton-root"
-        level={10}
-      />
-      <div className="flex justify-center mx-auto mb-10">
-        <input
-          className="bg-red-200 rounded-sm px-3 py-2"
-          value={item}
-          onChange={(e) => setItem(e.target.value)}
-          placeholder="Enter something..."
-          onKeyPress={(e) => keyPress(e)}
-        />
-        <button
-          className="bg-red-500 rounded-sm text-white px-3 py-2"
-          onClick={newitem}
-        >
-          ENTER
-        </button>
-      </div>
-      <div>
-        {items &&
-          items.map((item, index) => {
-            return (
-              <Draggable
-                key={item.id}
-                defaultPosition={item.defaultPos}
-                onStop={(e, data) => {
-                  updatePos(data, index);
-                }}
-              >
-                <div
-                  style={{ backgroundColor: item.color }}
-                  className="flex justify-between w-60 p-4"
-                >
-                  <div>{`${item.item}`}</div>
-                  <button
-                    className="rounded-full bg-green-500 px-2 py-1 text-xs border-0 text-gray-100"
-                    id="delete"
-                    onClick={(e) => deleteNote(item.id)}
-                  >
-                    X
-                  </button>
-                </div>
-              </Draggable>
-            );
-          })}
-      </div>
-    </div>
-  );
-};
+    return (
+        <main>
+            <MouseParticles
+                g={1}
+                number={200}
+                color={["blue", "aqua"]}
+                radius={7}
+                cull="MuiSvgIcon-root,MuiButton-root"
+                level={7}
+            />
+            <div className="flex justify-center py-3 bg-gray-200">
+                <input
+                    className="rounded-l-md py-2 px-3"
+                    value={item}
+                    placeholder="入力してください..."
+                    onChange={ e => setItem(e.target.value) }
+                    onKeyDown={ e => handleKeyPress(e) }
+                />
+                <button
+                    className="bg-red-400 rounded-r-md text-white py-2 px-3"
+                    onClick={addItem}
+                >追加</button>
+            </div>
+            <ul>
+                {items &&
+                    items.map((item, index) => {
+                        return (
+                            <Draggable
+                                key={item.id}
+                                defaultPosition={item.defaultPos}
+                                onStop={(e, data) => {
+                                    updatePosition(data, index)
+                                }}
+                            >
+                                <li
+                                    style={{backgroundColor: item.color}}
+                                    className="flex justify-between w-80 p-3 rounded-xl"
+                                >
+                                    {`${item.item}`}
+                                    <button
+                                        className="delete rounded-full font-bold text-gray-400 bg-white hover:bg-red-500 hover:text-white px-2"
+                                        onClick={ e => deleteItem(item.id) }
+                                    >×</button>
+                                </li>
+                            </Draggable>
+                        )
+                    })
+                }
+            </ul>
+        </main>
+    )
+}
 
-export default Main;
+export default Main
