@@ -27,8 +27,7 @@ const Main = () => {
             // 項目の値をリセット
             setItem("")
         } else {
-            alert("Enter a item")
-            setItem("")
+            alert("入力して、追加ボタンを押してください。")
         }
     }
 
